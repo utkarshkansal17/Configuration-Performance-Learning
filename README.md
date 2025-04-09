@@ -100,8 +100,61 @@ Generate system-wise comparison heatmaps:
 
 python "Comparison by System.py"
 
+After running the scripts the output will look this
+
+```bash
+> System: batlik, Dataset: corona.csv, Training fraction: 0.7, Repeats: 3
+Average MAPE: 0.02
+Average MAE: 0.04
+Average RMSE: 0.05
+```
+
+
 Perform statistical significance tests (via Jupyter Notebook):
 
 jupyter notebook "Results/Stat_test.ipynb"
 
-## How to put values into CSV file?
+## 📝 Logging Results to CSV
+
+To standardize the evaluation output across all model scripts, use a structured list called `results` to collect and store performance metrics for each dataset within a system.
+
+### 🔹 Step-by-Step Logging Guide
+
+1. **Initialize a results list** at the start of your script (before the main loop):
+
+```python
+results = []
+```
+2. After computing average metrics inside your inner loop (i.e., after printing the final scores), log the result for that dataset like this:
+
+```python
+
+# Collect results for CSV export
+results.append({ 
+    'System': current_system,
+    'Dataset': csv_file,
+    'TrainFraction': train_frac,
+    'Repeats': num_repeats,
+    'Average MAPE': avg_mape,
+    'Average MAE': avg_mae,
+    'Average RMSE': avg_rmse
+})
+```
+At the end of the script, save all results to a CSV file in the Results/ directory:
+
+```python
+import pandas as pd
+os.makedirs('Results', exist_ok=True)
+pd.DataFrame(results).to_csv('Results/YourModelName.csv', index=False)
+```
+📌 Replace "YourModelName.csv" with the specific filename for your model (e.g., XGBR.csv, Voting Regressor EL with Tunning.csv, etc.).
+
+| System   | Dataset         | TrainFraction | Repeats | Average MAPE | Average MAE | Average RMSE |
+|----------|-----------------|----------------|---------|----------------|---------------|----------------|
+| batlik   | corona.csv      | 0.7            | 30      | 0.023          | 0.045         | 0.067          |
+| dconvert | jpeg-small.csv  | 0.7            | 30      | 0.012          | 0.034         | 0.058          |
+| ...      | ...             | ...            | ...     | ...            | ...           | ...            |
+
+You can also check the Results folder csv files for more understanding of the above output results
+
+This logging mechanism ensures reproducibility and simplifies comparison across models and systems. It also enables downstream statistical analysis and visualization (e.g., heatmaps, t-tests).
