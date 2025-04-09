@@ -140,7 +140,7 @@ results.append({
     'Average RMSE': avg_rmse
 })
 ```
-At the end of the script, save all results to a CSV file in the Results/ directory:
+3. At the end of the script, save all results to a CSV file in the Results/ directory:
 
 ```python
 import pandas as pd
